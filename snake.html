@@ -11,19 +11,23 @@
         <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
 
         <script>
+            // Настройка холста
             var canvas = document.getElementById("canvas");
             var ctx = canvas.getContext("2d");
 
+            // Получаем ширину и высоту лемента canvas
             var width = canvas.width;
             var height = canvas.height;
 
+            //Вычисляем ширину и высоту в ячейках
             var blockSize = 10;
             var widthInBlocks = width / blockSize;
             var heightInBlock = height / blockSize;
 
+            //Устанавливаем счет
             var score = 0;
 
-            // Рисуем рамку для поля
+            // Рисуем рамку
             var drawBorder = function () {
                 ctx.fillStyle = "Gray";
                 ctx.fillRect(0, 0, width, blockSize);
@@ -32,7 +36,7 @@
                 ctx.fillRect(width - blockSize, 0, blockSize, height);
             };
 
-            // Отображение счета
+            // Выводим счет игры в верхнем левом углу
             var drawScore = function () {
                 ctx.font = "20px Courier";
                 ctx.fillStyle = "Black";
@@ -41,7 +45,7 @@
                 ctx.fillText("Счет: " + score, blockSize, blockSize);
             };
 
-            // Функция - конец игры
+            // Отменяем действие setInterval и печатаем сообщение "Конец игры"
             var gameOver = function () {
                 clearInterval(intervalId);
                 ctx.font = "60px Courier";
@@ -51,10 +55,45 @@
                 ctx.fillText("Конец игры", width / 2, height / 2);
             };
 
+            //Рисуем окружность (используя функцию из главы 14)
+            var circle = function (x, y, radius, fillCircle) {
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+                if (fillCircle) {
+                    ctx.fill();
+                } else {
+                    ctx.stroke();
+                }
+            };
+
+            //Задаем конструктор Block (ячейка)
+            var Block = function (col, row) {
+                this.col = col;
+                this.row = row;
+            };
+
+            // Рисуем квадрат в позиции ячейки
+            Block.prototype.drawSquare = function (color) {
+                var x = this.col * blockSize;
+                var y = this.row * blockSize;
+                ctx.fillStyle = color;
+                ctx.fillRect(x, y, blockSize, blockSize);
+            };
+
+            // Рисуем круг в позиции ячейки
+            Block.prototype.drawCircle = function (color) {
+                var centerX = this.col * blockSize + blockSize / 2;
+                var centerY = this.row * blockSize + blockSize / 2;
+                ctx.fillStyle = color;
+                circle(centerX, centerY, blockSize / 2, true);
+            };
+
+            //Проверяем, находится ли эта ячейка в той же позиции, что и ячейка otherBlock
+            Block.prototype.equal = function (otherBlock) {
+                return this.col === otherBlock.col && this.row === otherBlock.row;
+            };
          
-                drawBorder();
-                drawScore();
-                gameOver();
+               
 
             
 
