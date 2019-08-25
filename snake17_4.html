@@ -6,7 +6,7 @@
     </head>
     <body>
 
-        <canvas id="canvas" width="400" height="400"></canvas>
+        <canvas id="canvas" width="500" height="500"></canvas>
 
         <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
 
@@ -108,8 +108,17 @@
             // Рисуем квадратик для каждого сегмента тела змейки
 
             Snake.prototype.draw = function () {
-                for (var i = 0; i < this.segments.length; i++) {
-                    this.segments[i].drawSquare("Blue");
+                this.segments[0].drawSquare("LimeGreen");
+                var isEvenSegment = false;
+
+                for (var i = 1; i < this.segments.length; i++) {
+                    if (isEvenSegment) {
+                        this.segments[i].drawSquare("Blue");
+                    } else {
+                        this.segments[i].drawSquare("Yellow");
+                    }
+
+                    isEvenSegment = !isEvenSegment; // следующий сегмент будет нечетным
                 }
             };
 
@@ -194,7 +203,16 @@
                 var randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1;
                 var randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
                 this.position = new Block(randomCol, randomRow);
-            };
+            
+
+              // Проверяем не передвинули ли мы яблоко в ячейку занятую сейчас телом змейки
+              for (var i = 0; i < occupiedBlocks.length; i++) {
+                if (this.position.equal(occupiedBlocks[i])) {
+                    this.move(occupiedBlocks); // Вызываем метод move повторно
+                    return;
+                }
+              }
+            };  
 
             // Создаем объект-змейку и объект-яблоко
             var snake = new Snake();
